@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Register</title>
+  <title>Student Register / Admin</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -22,11 +22,11 @@
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
       width: 400px;
       margin-bottom: 20px;
+      text-align: center;
     }
     h2 {
       margin-bottom: 1rem;
       color: #333;
-      text-align: center;
     }
     input {
       width: 100%;
@@ -54,7 +54,6 @@
       margin-top: 1rem;
       font-size: 0.9rem;
       color: green;
-      text-align: center;
     }
     table {
       width: 100%;
@@ -70,43 +69,70 @@
       background: #667eea;
       color: #fff;
     }
+    #switchBtn {
+      background: #f0f0f0;
+      color: #333;
+      margin-bottom: 15px;
+    }
+    #switchBtn:hover {
+      background: #ddd;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Student Registration -->
   <div class="container">
-    <h2>Register Student</h2>
+    <button id="switchBtn">Switch to Admin Login</button>
+
+    <!-- Student Registration Form -->
     <form id="registerForm">
+      <h2>Register Student</h2>
       <input type="text" id="name" placeholder="Enter Name" required>
       <input type="text" id="roll" placeholder="Enter Roll No" required>
       <input type="text" id="class" placeholder="Enter Class" required>
       <button type="submit">Register</button>
+      <div class="message" id="registerMessage"></div>
     </form>
-    <div class="message" id="registerMessage"></div>
-  </div>
 
-  <!-- Admin Login -->
-  <div class="container">
-    <h2>Admin Login</h2>
-    <form id="adminForm">
+    <!-- Admin Login Form -->
+    <form id="adminForm" style="display:none;">
+      <h2>Admin Login</h2>
       <input type="text" id="adminName" placeholder="Admin Name" required>
       <input type="text" id="adminCode" placeholder="Admin Code" required>
       <button type="submit">View Present Students</button>
+      <div class="message" id="adminMessage"></div>
+      <div id="presentList"></div>
     </form>
-    <div class="message" id="adminMessage"></div>
-    <div id="presentList"></div>
   </div>
 
 <script>
+  const switchBtn = document.getElementById("switchBtn");
   const registerForm = document.getElementById("registerForm");
-  const registerMessage = document.getElementById("registerMessage");
-
   const adminForm = document.getElementById("adminForm");
+  const registerMessage = document.getElementById("registerMessage");
   const adminMessage = document.getElementById("adminMessage");
   const presentList = document.getElementById("presentList");
 
   const BACKEND_URL = "https://student-register-backend-3.onrender.com";
+
+  // Toggle forms
+  switchBtn.addEventListener("click", () => {
+    if(registerForm.style.display === "none"){
+      registerForm.style.display = "block";
+      adminForm.style.display = "none";
+      switchBtn.textContent = "Switch to Admin Login";
+      registerMessage.textContent = "";
+      adminMessage.textContent = "";
+      presentList.innerHTML = "";
+    } else {
+      registerForm.style.display = "none";
+      adminForm.style.display = "block";
+      switchBtn.textContent = "Switch to Student Registration";
+      registerMessage.textContent = "";
+      adminMessage.textContent = "";
+      presentList.innerHTML = "";
+    }
+  });
 
   // Student Registration
   registerForm.addEventListener("submit", async (e) => {
@@ -160,7 +186,6 @@
           table += "</table>";
           presentList.innerHTML = table;
         }
-
       } else {
         adminMessage.textContent = data.message;
         adminMessage.style.color = "red";
